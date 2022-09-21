@@ -1,0 +1,179 @@
+/* Copyright (c) 2018, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+&pio {
+	sia81xx_gpio_L_ONE: sia81xx_gpio_L_ONE {
+		pins_cmd_dat {
+			pinmux = <PINMUX_GPIO3__FUNC_GPIO3>;
+			
+			slew-rate = <1>;
+			bias-disable;
+		};
+	};
+	
+	sia81xx_gpio_L_TWO: sia81xx_gpio_L_TWO {
+		pins_cmd_dat {
+			pinmux = <PINMUX_GPIO4__FUNC_GPIO4>;
+			
+			slew-rate = <1>;
+			bias-disable;
+		};
+	};
+	
+	sia81xx_gpio_R_ONE: sia81xx_gpio_R_ONE {
+		pins_cmd_dat {
+			pinmux = <PINMUX_GPIO14__FUNC_GPIO14>;
+			
+			slew-rate = <1>;
+			bias-disable;
+		};
+	};
+
+	sia81xx_gpio_R_TWO: sia81xx_gpio_R_TWO {
+		pins_cmd_dat {
+			pinmux = <PINMUX_GPIO15__FUNC_GPIO15>;
+			
+			slew-rate = <1>;
+			bias-disable;
+		};
+	};	
+};
+
+/ {
+	sia81xx_L_One: sia81xx@L_One {
+		compatible = "si,sia81xx";
+		si,sia81xx_type = "sia8101";
+		si,sia81xx_reset = <&pio 3 0>;
+		si,sia81xx_owi = <&pio 3 0>;
+		pinctrl-names = "sia81xx_gpio";
+		pinctrl-0 = <&sia81xx_gpio_L_ONE>;
+		
+		si,sia81xx_disable_pin = <0>;
+		
+		/* the same value share a same task
+		 * valid value range : 0 ~ 7 */
+		timer_task_hdl = <0>;
+		
+		channel_num = <0>;
+		owi_mode = <6>;
+		en_x_filter = <1>;
+		en_dynamic_id = <0>;
+		en_dynamic_updata_vdd = <0>;
+		dynamic_updata_vdd_port = <0x2>;
+	};
+	
+	sia81xx_L_Two: sia81xx@L_Two {
+		compatible = "si,sia81xx";
+		si,sia81xx_type = "sia8101";
+		si,sia81xx_reset = <&pio 4 0>;
+		si,sia81xx_owi = <&pio 4 0>;
+		pinctrl-names = "sia81xx_gpio";
+		pinctrl-0 = <&sia81xx_gpio_L_TWO>;
+		
+		si,sia81xx_disable_pin = <0>;
+		
+		/* the same value share a same task
+		 * valid value range : 0 ~ 7 */
+		timer_task_hdl = <0>;
+		
+		channel_num = <1>;
+		owi_mode = <6>;
+		en_x_filter = <1>;
+		en_dynamic_id = <0>;
+		en_dynamic_updata_vdd = <0>;
+		dynamic_updata_vdd_port = <0x2>;
+	};	
+	
+	sia81xx_R_One: sia81xx@R_One {
+		compatible = "si,sia81xx";
+		si,sia81xx_type = "sia8101";
+		si,sia81xx_reset = <&pio 14 0>;
+		si,sia81xx_owi = <&pio 14 0>;
+		pinctrl-names = "sia81xx_gpio";
+		pinctrl-0 = <&sia81xx_gpio_R_ONE>;
+		
+		si,sia81xx_disable_pin = <0>;
+		
+		/* the same value share a same task
+		 * valid value range : 0 ~ 7 */
+		timer_task_hdl = <0>;
+		
+		channel_num = <2>;
+		owi_mode = <6>;
+		en_x_filter = <0>;
+		en_dynamic_id = <0>;
+		en_dynamic_updata_vdd = <0>;
+		dynamic_updata_vdd_port = <0x2>;
+	};
+	
+	sia81xx_R_Two: sia81xx@R_Two {
+		compatible = "si,sia81xx";
+		si,sia81xx_type = "sia8101";
+		si,sia81xx_reset = <&pio 15 0>;
+		si,sia81xx_owi = <&pio 15 0>;
+		pinctrl-names = "sia81xx_gpio";
+		pinctrl-0 = <&sia81xx_gpio_R_TWO>;
+		
+		si,sia81xx_disable_pin = <0>;
+		
+		/* the same value share a same task
+		 * valid value range : 0 ~ 7 */
+		timer_task_hdl = <0>;
+		
+		channel_num = <3>;
+		owi_mode = <6>;
+		en_x_filter = <0>;
+		en_dynamic_id = <0>;
+		en_dynamic_updata_vdd = <0>;
+		dynamic_updata_vdd_port = <0x2>;
+	};	
+};
+
+&sound {
+	si,sia81xx-max-num = <4>;
+	si,sia81xx-aux-devs = <&sia81xx_L_One>, <&sia81xx_L_Two>, <&sia81xx_R_One>, <&sia81xx_R_Two>;
+	si,sia81xx-aux-devs-prefix = "SpkrLeft_One", "SpkrLeft_Two", "SpkrRight_One", "SpkrRight_Two";
+};
+
+&i2c6 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	clock-frequency = <400000>;
+	mediatek,use-open-drain;
+	
+	sia81xx_i2c_L_One: sia81xx_i2c@L_One {
+		compatible = "si,sia81xx-i2c";
+		reg = <0x58>;
+		si,sia81xx-dev = <&sia81xx_L_One>;
+	};
+
+	sia81xx_i2c_L_Two: sia81xx_i2c@L_Two {
+		compatible = "si,sia81xx-i2c";
+		reg = <0x59>;
+		si,sia81xx-dev = <&sia81xx_L_Two>;
+	};	
+		
+	sia81xx_i2c_R_One: sia81xx_i2c@R_One {
+		compatible = "si,sia81xx-i2c";
+		reg = <0x5a>;
+		si,sia81xx-dev = <&sia81xx_R_One>;
+	};
+	
+	sia81xx_i2c_R_Two: sia81xx_i2c@R_Two {
+		compatible = "si,sia81xx-i2c";
+		reg = <0x5b>;
+		si,sia81xx-dev = <&sia81xx_R_Two>;
+	};	
+};
+
+
+
